@@ -1,2 +1,0 @@
-# notours
-nodejs project
