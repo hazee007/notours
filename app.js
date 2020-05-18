@@ -1,6 +1,9 @@
 const express = require('express');
 const morgan = require('morgan');
 
+const AppError = require('./utils/appError');
+
+const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routers/tourRouters');
 const userRouter = require('./routers/userRouters');
 
@@ -12,11 +15,17 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 app.use((req, res, next) => {
-  console.log('right here :smile');
+  req.requestTime = new Date().toISOString();
   next();
 });
 
 app.use('/app/v1/tours', tourRouter);
 app.use('/app/v1/users', userRouter);
+
+app.all('*', (req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on the server!`, 404));
+});
+
+app.use(globalErrorHandler);
 
 module.exports = app;

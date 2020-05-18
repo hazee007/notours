@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+
+process.on('uncaughtException', (err) => {
+  console.log('UNHANDLEXCEPTION! 💥 Shutting Down');
+  console.log(err.name, err.message);
+  process.exit(1);
+});
+
 const app = require('./app');
 
 dotenv.config({ path: './config.env' });
@@ -19,19 +26,18 @@ mongoose
   })
   .then(() => console.log('DB connection established! 👍'));
 
-// const testTour = new Tour({
-//   name: 'The Park Camper',
-//   // rating: 4.7,
-//   price: 997,
-// });
-
-// testTour
-//   .save()
-//   .then((doc) => console.log(doc))
-//   .catch((err) => console.log(err));
-
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`app listening on port ${port}...`);
 });
+
+process.on('unhandledRejection', (err) => {
+  console.log('UNHANDLEREJECTION! 💥 Shutting Down');
+  console.log(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  });
+});
+
+// console.log(x);

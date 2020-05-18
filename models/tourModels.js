@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
-// const validator = require('validator');
+// const validator = required('validator');
 
 const tourSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      require: [true, 'A toure must have a name '],
+      required: [true, 'A toure must have a name '],
       unique: true,
       trim: true,
       maxlength: [40, 'A tour must have at most 40 characters'],
@@ -16,15 +16,15 @@ const tourSchema = new mongoose.Schema(
     slug: String,
     duration: {
       type: Number,
-      require: [true, 'A toure must have a duration '],
+      required: [true, 'A toure must have a duration '],
     },
     maxGroupSize: {
       type: Number,
-      require: [true, 'A toure must have a group size'],
+      required: [true, 'A toure must have a group size'],
     },
     difficulty: {
       type: String,
-      require: [true, 'A toure must have a difficulty'],
+      required: [true, 'A toure must have a difficulty'],
       enum: {
         values: ['easy', 'medium', 'difficult'],
         message: 'Difficulty is either: easy, medium or difficult',
@@ -42,7 +42,7 @@ const tourSchema = new mongoose.Schema(
     },
     price: {
       type: Number,
-      require: [true, 'A toure must have a price'],
+      required: [true, 'A toure must have a price'],
     },
     proceDiscount: {
       type: Number,
@@ -57,7 +57,7 @@ const tourSchema = new mongoose.Schema(
     summary: {
       type: String,
       trim: true,
-      require: [true, 'A toure must have a summary'],
+      required: [true, 'A toure must have a summary'],
     },
     description: {
       type: String,
@@ -65,7 +65,7 @@ const tourSchema = new mongoose.Schema(
     },
     imageCover: {
       type: String,
-      require: [true, 'A toure must have a cover image'],
+      required: [true, 'A toure must have a cover image'],
     },
     images: [String],
     createdAt: {
@@ -81,6 +81,7 @@ const tourSchema = new mongoose.Schema(
   },
   {
     toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 

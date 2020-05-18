@@ -4,7 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "startprod": "set NODE_ENV=production&&nodemon server.js",
+    "debug": "ndb server.js"
   },
   "author": "jideDev",
   "license": "ISC",
