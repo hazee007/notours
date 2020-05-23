@@ -18,7 +18,7 @@
 /.env.test.local
 /.env.production.local
 .env
-/.config.env
+
 /npm-debug.log*
 
 npm-debug.log*
@@ -26,3 +26,4 @@ yarn-debug.log*
 yarn-error.log*
 node_modules
 node_modules
+config.env
