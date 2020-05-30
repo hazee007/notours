@@ -1,6 +1,14 @@
 const User = require('../models/userModels');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const handlerFactory = require('./handlerFactory');
+
+exports.getAllUsers = handlerFactory.getAll(User);
+exports.getUser = handlerFactory.getOne(User);
+exports.deleteUser = handlerFactory.deleteOne(User);
+
+// Do not update password with this
+exports.updateUser = handlerFactory.updateOne(User);
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -10,16 +18,10 @@ const filterObj = (obj, ...allowedFields) => {
   return newObj;
 };
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
-
-  res.status(201).json({
-    status: 'success',
-    data: {
-      users,
-    },
-  });
-});
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1.) Create error if user post password data
@@ -57,25 +59,6 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 exports.createUser = (req, res) => {
   res.status(500).json({
     status: 'error',
-    message: 'Route is not available',
-  });
-};
-exports.getUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Route is not available',
-  });
-};
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Route is not available',
-  });
-};
-
-exports.deleteUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Route is not available',
+    message: 'This Route is not defined use /signUp instead',
   });
 };

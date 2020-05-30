@@ -11,6 +11,7 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routers/tourRouters');
 const userRouter = require('./routers/userRouters');
+const reviewRouter = require('./routers/reviewRouters');
 
 const app = express();
 app.use(express.json());
@@ -31,7 +32,7 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again in an hour!',
 });
 
-app.use('/app', limiter);
+app.use('/api', limiter);
 
 // Body passer, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
@@ -66,8 +67,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/app/v1/tours', tourRouter);
-app.use('/app/v1/users', userRouter);
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on the server!`, 404));
