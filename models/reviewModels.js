@@ -32,7 +32,7 @@ reviewSchema.pre(/^find/, function (next) {
   //   path: 'tour',
   //   select: 'name',
   // })
-  this.populate({ path: 'user', select: 'name' });
+  this.populate({ path: 'user', select: 'name photo' });
   next();
 });
 
