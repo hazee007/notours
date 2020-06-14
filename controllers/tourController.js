@@ -1,7 +1,59 @@
+const multer = require('multer');
+const sharp = require('sharp');
 const Tour = require('../models/tourModels');
 const catchAsync = require('../utils/catchAsync');
 const handlerFactory = require('./handlerFactory');
 const AppError = require('../utils/appError');
+
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, callback) => {
+  if (file.mimetype.startsWith('image')) {
+    callback(null, true);
+  } else {
+    callback(
+      new AppError('Not an image!, Please upload only images', 400),
+      false
+    );
+  }
+};
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+
+// for multiple image
+// upload.array('somename', 5);
+
+exports.uploadTourImages = upload.fields([
+  { name: 'imageCover', maxCount: 1 },
+  { name: 'images', maxCount: 3 },
+]);
+
+exports.resizeTourImages = catchAsync(async (req, res, next) => {
+  if (!req.files.imageCover || !req.files.images) return next();
+
+  // 1. CoverImage
+  const imageCoverFilename = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
+  await sharp(req.files.imageCover[0].buffer)
+    .resize(2000, 1333)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/tours/${imageCoverFilename}`);
+  req.body.imageCover = imageCoverFilename;
+
+  // 2. Images
+  req.body.images = [];
+  await Promise.all(
+    req.files.images.map(async (file, i) => {
+      const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
+      await sharp(file.buffer)
+        .resize(2000, 1333)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/img/tours/${filename}`);
+      req.body.images.push(filename);
+    })
+  );
+  next();
+});
 
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
@@ -104,7 +156,7 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
   const tours = await Tour.find({
     startLocation: { $geoWithin: { $centerSphere: [[long, lat], radius] } },
   });
-  console.log(distance, lat, long, unit);
+  // console.log(distance, lat, long, unit);
   res.status(200).json({
     status: 'success',
     result: tours.length,
@@ -146,7 +198,7 @@ exports.getDistances = catchAsync(async (req, res, next) => {
       },
     },
   ]);
-  console.log(lat, long, unit);
+  // console.log(lat, long, unit);
   res.status(200).json({
     status: 'success',
     data: {

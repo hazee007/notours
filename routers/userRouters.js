@@ -1,5 +1,4 @@
 const express = require('express');
-
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 
@@ -12,6 +11,8 @@ const {
   updateMe,
   deleteMe,
   getMe,
+  uploadUserPhoto,
+  resizeUserPhoto,
 } = userController;
 
 const {
@@ -37,7 +38,7 @@ userRouter.post('/forgotPassword', forgotPassword);
 // Protect all route after middleware
 userRouter.use(protect);
 userRouter.patch('/updateMyPassword', updatePassword);
-userRouter.patch('/updateMe', updateMe);
+userRouter.patch('/updateMe', uploadUserPhoto, resizeUserPhoto, updateMe);
 userRouter.delete('/deleteMe', deleteMe);
 
 userRouter.use(restrictTo('admin'));
