@@ -78,7 +78,7 @@ exports.logout = (req, res) => {
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
-  console.log('here');
+  // console.log('here');
   // 1) getting token and checking if it is exist on server
   let token;
   if (
