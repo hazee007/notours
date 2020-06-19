@@ -18,6 +18,8 @@ const viewRouter = require('./routers/viewRouters');
 const bookingsRouter = require('./routers/bookingsRouter');
 
 const app = express();
+
+app.enable('trust proxy');
 app.use(express.json());
 
 app.set('view engine', 'pug');
